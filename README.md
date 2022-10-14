@@ -1,2 +1,2 @@
 # SQL Rockbuster Stealth Data Analysis Project
-### 
+### This project's purpose was to assist a hypothetical company, Rockbuster Stealth, in answering various questions about their business. The main questions included which movies contributed most/least to revenue gain, the average rental duration for all videos, the countries customers are based in, where customers with a high lifetime value are located, and the variation in sales between regions.
