@@ -1,0 +1,32 @@
+### Finding the average amount paid by the top 5 customers in the Rockbuster database
+
+WITH customer_full_address(customer_id, last_name, address, city, country)
+AS (SELECT A.customer_id, A.first_name, A.last_name, B.address, C.city, D.country
+FROM customer A
+JOIN address B ON A.address_id = B.address_id
+JOIN city C ON B.city_id = C.city_id
+JOIN country D ON C.country_id = D.country_id), 
+top_countries (country) AS 
+(SELECT country
+FROM customer_full_address
+GROUP BY country
+ORDER BY COUNT(*) DESC
+LIMIT 10), 
+top_cities(city) AS
+(SELECT city
+FROM customer_full_address
+WHERE country IN (SELECT country FROM top_countries)
+GROUP BY city
+ORDER BY COUNT(*) DESC
+LIMIT 10)
+
+SELECT ROUND(AVG(top_customers.total_amt_paid),2)
+FROM customer_full_address,
+(SELECT A.first_name, A.last_name, A.city, A.country, SUM(b.amount) AS total_amt_paid
+FROM customer_full_address A
+JOIN payment B ON A.customer_id = B.customer_id
+WHERE A.city IN (SELECT city FROM top_cities)
+AND A.country IN (SELECT country FROM top_countries)
+GROUP BY a.customer_id, 1,2,3,4
+ORDER BY total_amt_paid DESC
+LIMIT 5) AS top_customers;
